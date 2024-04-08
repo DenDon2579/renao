@@ -1,0 +1,99 @@
+.main {
+  width: 100px;
+  height: 100px;
+  padding: 1rem;
+  display: flex;
+}
+
+.row {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  border-left: 1px solid rgba(0, 0, 0, 0.137);
+  border-right: 1px solid rgba(0, 0, 0, 0.137);
+  /* z-index: -2; */
+}
+
+.cell {
+  width: 65px;
+  display: flex;
+  height: 65px;
+  border-right: 1px solid rgba(0, 0, 0, 0.137);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.137);
+  position: relative;
+  align-items: center;
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.row:last-child > .cell {
+  border-bottom: none;
+}
+
+.row:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.137);
+}
+
+.row:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.137);
+}
+
+.timeRow {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  /* margin-left: -4px; */
+
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  padding-right: 1px;
+}
+
+.time {
+  width: 65px;
+  height: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  /* border-right: 1px solid rgba(0, 0, 0, 0.3); */
+}
+.hourMark {
+  height: 20px;
+  width: 0px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.quarterMark {
+  height: 8px;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.halfMark {
+  height: 12px;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.phantom {
+  box-sizing: border-box;
+  position: absolute;
+  height: 70%;
+  font-size: 16px;
+  left: 0;
+  width: 150%;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #e2e8f0;
+  z-index: -12;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.phantom[hidden] {
+  display: none;
+}
