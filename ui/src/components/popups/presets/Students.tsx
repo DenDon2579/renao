@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TbUserCircle, TbDots } from 'react-icons/tb';
 import StudentInfo from './StudentInfo';
+import ButtonPrimary from '../../uiKit/buttons/ButtonPrimary';
 
 type Props = {};
 
 const Students = (props: Props) => {
   const students = [
-    { id: 1, name: 'Владиксуперогалик 11 класс' },
-    { id: 2, name: 'Иванмбек 12 класс' },
-    { id: 3, name: 'Мастурбек 4 класс' },
-    { id: 4, name: 'Влад 1 класс' },
-    { id: 1, name: 'Владиксуперогалик 11 класс' },
-    { id: 2, name: 'Иванмбек 12 класс' },
-    { id: 3, name: 'Мастурбек 4 класс' },
-    { id: 4, name: 'Влад 1 класс' },
+    { id: '1', name: 'Владиксуперогалик 11 класс' },
+    { id: '2', name: 'Иванмбек 12 класс' },
+    { id: '3', name: 'Керил 4 класс' },
+    { id: '4', name: 'Влад 1 класс' },
   ];
+
+  const [selectedStudentID, setSelectedStudentID] = useState<null | string>(
+    null
+  );
   return (
     <div className='flex'>
       <div className='w-72 h-96 p-2 border-r border-slate-200 flex flex-col'>
@@ -26,9 +27,10 @@ const Students = (props: Props) => {
         </div>
         <div className='flex-grow overflow-auto'>
           {students.map((student) => (
-            <div
+            <ButtonPrimary
+              onClick={() => setSelectedStudentID(student.id)}
               key={student.id}
-              className='w-full h-10 bg-white border border-slate-200 flex justify-between items-center mb-2 px-1 rounded-md hover:bg-slate-50 cursor-pointer shadow-sm shadow-slate-200'
+              className='w-full h-10 flex justify-between items-center mb-2 px-1'
             >
               <div className='flex items-center'>
                 <TbUserCircle size={26} className='mr-2 text-slate-400' />
@@ -36,14 +38,13 @@ const Students = (props: Props) => {
                   {student.name}
                 </span>
               </div>
-            </div>
+            </ButtonPrimary>
           ))}
         </div>
-        <button className='p-2 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm shadow-slate-200 rounded-md w-full'>
-          Добавить ученика
-        </button>
+        <ButtonPrimary className='mt-2'>Добавть ученика</ButtonPrimary>
       </div>
-      <StudentInfo />
+
+      <StudentInfo selectedStudentID={selectedStudentID} />
     </div>
   );
 };

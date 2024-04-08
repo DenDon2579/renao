@@ -16,9 +16,9 @@
 }
 
 .cell {
-  width: 65px;
+  width: 64px;
   display: flex;
-  height: 65px;
+  height: 64px;
   border-right: 1px solid rgba(0, 0, 0, 0.137);
   border-bottom: 1px solid rgba(0, 0, 0, 0.137);
   position: relative;
@@ -51,7 +51,7 @@
 }
 
 .time {
-  width: 65px;
+  width: 64px;
   height: 20px;
   display: flex;
   align-items: flex-end;
@@ -86,12 +86,13 @@
   width: 150%;
   background-color: rgb(255, 255, 255);
   border: 1px solid #e2e8f0;
-  z-index: -12;
+  z-index: -1;
   border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  opacity: 0.8;
 }
 
 .phantom[hidden] {

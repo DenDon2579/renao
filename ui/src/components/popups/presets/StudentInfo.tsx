@@ -1,7 +1,9 @@
 import React from 'react';
 import { TbUserCircle } from 'react-icons/tb';
 
-type Props = {};
+type Props = {
+  selectedStudentID: string | null;
+};
 
 const students = [
   { id: 1, name: 'Владиксуперогалик 11 класс' },
@@ -12,10 +14,14 @@ const students = [
 
 const StudentInfo = (props: Props) => {
   return (
-    <div className='h-96 p-2 flex justify-center'>
-      <span className='text-slate-500 mt-3'>
-        Выберите ученика для просмотра информации
-      </span>
+    <div className='h-96 w-96 p-2 flex justify-center'>
+      {!props.selectedStudentID ? (
+        <span className='text-slate-500 mt-3'>
+          Выберите ученика для просмотра информации
+        </span>
+      ) : (
+        <span>{props.selectedStudentID}</span>
+      )}
     </div>
   );
 };

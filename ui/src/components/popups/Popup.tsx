@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Students from './presets/Students';
 import { TbX } from 'react-icons/tb';
-import Schedule from './presets/Schedule';
+import Schedule from './presets/schedule/Schedule';
 import StudentInfo from './presets/StudentInfo';
 
 type Props = {
@@ -48,8 +48,7 @@ const Popup = (props: Props) => {
           </div>
         </div>
         <div className='flex'>
-          <Schedule />
-          <Students /> <Schedule />
+          <Students />
         </div>
       </div>
     </div>
