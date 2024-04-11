@@ -48,7 +48,7 @@ const Popup = (props: Props) => {
           </div>
         </div>
         <div className='flex'>
-          <Students />
+          <Schedule />
         </div>
       </div>
     </div>

@@ -2,9 +2,11 @@ import React, { createElement, useEffect, useRef, useState } from 'react';
 import classes from './Schedule.module.css';
 import Students from '../Students';
 import ScheduleCell from './ScheduleCell';
+import Lesson from './Lesson';
 
 type Props = {};
 export interface ILesson {
+  id: string;
   studentID: string;
   studentName: string;
   day: number;
@@ -12,8 +14,9 @@ export interface ILesson {
   minute: number;
   duration: number;
 }
-const lessons: ILesson[] = [
+const lessonsEx: ILesson[] = [
   {
+    id: '1',
     studentID: '2323',
     studentName: 'Владик 6 класс',
     day: 3,
@@ -22,16 +25,18 @@ const lessons: ILesson[] = [
     duration: 3,
   },
   {
+    id: '2',
     studentID: '2323',
-    studentName: 'Питер 1 класс',
+    studentName: 'Влад 1 класс',
     day: 5,
-    hour: 18,
+    hour: 19,
     minute: 0,
     duration: 1.5,
   },
 ];
 
 const Schedule = (props: Props) => {
+  const [lessons, setLessons] = useState<ILesson[]>(lessonsEx);
   const [phantomLesson, setPhantomLesson] = useState<HTMLDivElement>();
 
   useEffect(() => {
@@ -89,6 +94,18 @@ const Schedule = (props: Props) => {
     );
   };
 
+  const onLessonChanged = (newLessonData: ILesson) => {
+    setLessons((prev) => {
+      return prev.map((lesson) => {
+        if (lesson.id === newLessonData.id) {
+          return newLessonData;
+        }
+        return lesson;
+      });
+    });
+    console.log(lessons);
+  };
+
   return (
     <div className='w-auto h-auto p-4 z-10 flex mt-2'>
       <div className='mt-5 *:h-16 *:flex *:items-center mr-2 *:text-slate-600'>
@@ -100,7 +117,7 @@ const Schedule = (props: Props) => {
         <div>Сб</div>
         <div>Вс</div>
       </div>
-      <div className={classes.grid}>
+      <div className={classes.grid + ' relative'}>
         <div className={classes.timeRow}>
           {new Array(18).fill(0).map((_, i) => (
             <div className={classes.time}>
@@ -115,21 +132,22 @@ const Schedule = (props: Props) => {
             </div>
           ))}
         </div>
-        <div>
+
+        <div className='relative border-t border-slate-300'>
+          <div className={classes.layerGrid}>
+            {lessons.map((lesson) => (
+              <Lesson
+                key={lesson.id}
+                lessonData={lesson}
+                onLessonChanged={onLessonChanged}
+              />
+            ))}
+          </div>
           {/* Рисуем таблицу */}
           {new Array(7).fill(0).map((_, rowIndex) => (
             <div key={rowIndex} className={classes.row}>
               {new Array(18).fill(0).map((_, cellIndex) => (
-                <ScheduleCell
-                  rowIndex={rowIndex}
-                  cellIndex={cellIndex}
-                  lesson={getCellLesson(rowIndex, cellIndex)}
-                  mouseEnterHandler={mouseEnterHandler}
-                  mouseLeaveHandler={mouseLeaveHandler}
-                  mouseMoveHandler={mouseMoveHandler}
-                  onMouseEnterLesson={onMouseEnterLesson}
-                  key={'' + cellIndex + rowIndex}
-                />
+                <div className='w-16 h-16 flex relative items-center border-b border-r border-slate-200 last:border-r-0'></div>
               ))}
             </div>
           ))}
