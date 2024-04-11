@@ -41,7 +41,7 @@ const Students = (props: Props) => {
             </ButtonPrimary>
           ))}
         </div>
-        <ButtonPrimary className='mt-2'>Добавть ученика</ButtonPrimary>
+        <ButtonPrimary className='mt-2'>Добавить ученика</ButtonPrimary>
       </div>
 
       <StudentInfo selectedStudentID={selectedStudentID} />

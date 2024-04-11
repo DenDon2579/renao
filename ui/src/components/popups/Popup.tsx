@@ -3,6 +3,7 @@ import Students from './presets/Students';
 import { TbX } from 'react-icons/tb';
 import Schedule from './presets/schedule/Schedule';
 import StudentInfo from './presets/StudentInfo';
+import { Route, Routes } from 'react-router-dom';
 
 type Props = {
   title: string;
@@ -48,7 +49,10 @@ const Popup = (props: Props) => {
           </div>
         </div>
         <div className='flex'>
-          <Schedule />
+          <Routes>
+            <Route path='/schedule' element={<Schedule />} />
+            <Route path='/students' element={<Students />} />
+          </Routes>
         </div>
       </div>
     </div>
