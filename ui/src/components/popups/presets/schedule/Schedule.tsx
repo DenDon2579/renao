@@ -27,7 +27,7 @@ const lessonsEx: ILesson[] = [
   {
     id: '2',
     studentID: '2323',
-    studentName: 'Влад 1 класс',
+    studentName: 'Владиславовичмнбек 1 класс',
     day: 5,
     hour: 19,
     minute: 0,

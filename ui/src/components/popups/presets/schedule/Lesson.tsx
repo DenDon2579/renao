@@ -140,7 +140,7 @@ const Lesson = ({ lessonData, onLessonChanged }: Props) => {
 
         gridRowStart: lessonData.day + 1 + (!isResizeMode ? offset.y : 0),
       }}
-      className='w-full h-full p-1 z-30'
+      className='w-full h-full p-0.5 z-30'
     >
       <div
         title={lessonData.studentName}
@@ -150,9 +150,9 @@ const Lesson = ({ lessonData, onLessonChanged }: Props) => {
         onDragEnd={dropHandler}
         onMouseEnter={() => setIsResizeButtonsVisible(true)}
         onMouseLeave={() => setIsResizeButtonsVisible(false)}
-        className='pointer-events-auto cursor-pointer overflow-clip relative w-full h-full bg-white border border-slate-200 rounded-md flex justify-center items-center text-center hover:bg-slate-50'
+        className='pointer-events-auto cursor-pointer relative w-full h-full overflow-clip bg-white border border-slate-200 rounded-md flex justify-center items-center text-center hover:bg-slate-50'
       >
-        {isResizeButtonsVisible && (
+        {(isResizeButtonsVisible || isResizeMode) && (
           <>
             <div
               onMouseDown={leftResizeHandler}
@@ -165,7 +165,11 @@ const Lesson = ({ lessonData, onLessonChanged }: Props) => {
           </>
         )}
 
-        {lessonData.studentName}
+        <span style={{ wordBreak: 'break-word' }}>
+          {lessonData.studentName.length >= lessonDuration * 2.5
+            ? lessonData.studentName.slice(0, lessonDuration * 2.5) + '..'
+            : lessonData.studentName}
+        </span>
       </div>
     </div>
   );
