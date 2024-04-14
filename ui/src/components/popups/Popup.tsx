@@ -33,7 +33,7 @@ const Popup = (props: Props) => {
       className='fixed w-full h-full flex justify-center items-center cursor-pointer'
       ref={popupOverlay}
     >
-      <div className='bg-slate-50 rounded-lg relative shadow-md border border-slate-100 shadow-slate-200 cursor-default'>
+      <div className='bg-white rounded-lg relative shadow-sm border border-indigo-200 shadow-indigo-100 cursor-default lg:max-w-screen-lg max-w-screen-sm'>
         <div className='border-b border-slate-200 flex justify-center items-center'>
           <div
             className='absolute right-0 m-2'
@@ -50,7 +50,14 @@ const Popup = (props: Props) => {
         </div>
         <div className='flex'>
           <Routes>
-            <Route path='/schedule' element={<Schedule />} />
+            <Route
+              path='/schedule'
+              element={
+                <>
+                  <Schedule />
+                </>
+              }
+            />
             <Route path='/students' element={<Students />} />
           </Routes>
         </div>

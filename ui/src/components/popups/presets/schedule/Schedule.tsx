@@ -20,7 +20,7 @@ const lessonsEx: ILesson[] = [
     studentID: '2323',
     studentName: 'Владик 6 класс',
     day: 3,
-    hour: 13,
+    hour: 7,
     minute: 0,
     duration: 3,
   },
@@ -28,71 +28,33 @@ const lessonsEx: ILesson[] = [
     id: '2',
     studentID: '2323',
     studentName: 'Владиславовичмнбек 1 класс',
-    day: 5,
-    hour: 19,
+    day: 3,
+    hour: 11,
     minute: 0,
     duration: 1.5,
   },
 ];
 
+const GRID_SIZE = 64;
+const TIME_RANGE_FROM = 10;
+const HOURS = 11;
+const DAYS = [0, 1, 2, 3, 4, 5];
+const DAYS_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
 const Schedule = (props: Props) => {
-  const [lessons, setLessons] = useState<ILesson[]>(lessonsEx);
+  const ref = useRef<HTMLDivElement>(null);
+  const [lessons, setLessons] = useState<ILesson[]>(
+    lessonsEx.filter((lesson) => {
+      if (
+        lesson.hour > TIME_RANGE_FROM &&
+        lesson.hour + lesson.duration <= TIME_RANGE_FROM + HOURS
+      ) {
+        return true;
+      }
+      return false;
+    })
+  );
   const [phantomLesson, setPhantomLesson] = useState<HTMLDivElement>();
-
-  useEffect(() => {
-    // Создаём фантомный элемент один раз
-    const phantomLesson = document.createElement('div');
-    phantomLesson.className = classes.phantom;
-    phantomLesson.classList.add(
-      'shadow-md',
-      'shadow-slate-200',
-      'text-slate-600'
-    );
-
-    phantomLesson.innerText = 'Создать';
-    setPhantomLesson(phantomLesson);
-  }, []);
-
-  // Юзер навелся на клетку -> Пихаем в эту клетку фантом и делаем видимым
-  const mouseEnterHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!phantomLesson) return;
-    phantomLesson.removeAttribute('hidden');
-    e.currentTarget.appendChild(phantomLesson);
-  };
-
-  // Курсор покинул клетку -> прячем фантом
-  const mouseLeaveHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    phantomLesson?.setAttribute('hidden', '');
-  };
-
-  //Юзер двигает мышкой -> Перемещаем фантом по четвертям часа
-  const mouseMoveHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!phantomLesson) return;
-    const width = e.currentTarget.clientWidth;
-    const offset = e.nativeEvent.offsetX;
-    let proportion = +Math.floor((offset / width) * 4);
-
-    if (e.shiftKey) {
-      //С шифтом магнитит по часам
-      phantomLesson.style.left = '0%';
-      proportion = 0;
-    } else {
-      //Иначе по четвертям часа
-      phantomLesson.style.left = 25 * proportion + '%';
-    }
-  };
-
-  //Юзер навелся на существующий урок -> прячем фантом
-  const onMouseEnterLesson = () => {
-    phantomLesson?.setAttribute('hidden', '');
-  };
-
-  //Ищем урок для определенной клетки
-  const getCellLesson = (rowIndex: number, cellIndex: number) => {
-    return lessons.find(
-      (lesson) => lesson.day === rowIndex && lesson.hour === cellIndex + 6 //Так как время у нас с 6 до 23 часов, прибавляем 6 к индексу ячейки
-    );
-  };
 
   const onLessonChanged = (newLessonData: ILesson) => {
     setLessons((prev) => {
@@ -103,54 +65,99 @@ const Schedule = (props: Props) => {
         return lesson;
       });
     });
-    console.log(lessons);
+  };
+
+  const scrollHandler = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+
+    if (e.deltaY > 0) {
+      ref.current.scrollLeft -= GRID_SIZE;
+    } else {
+      ref.current.scrollLeft += GRID_SIZE;
+    }
   };
 
   return (
-    <div className='w-auto h-auto p-4 z-10 flex mt-2'>
-      <div className='mt-5 *:h-16 *:flex *:items-center mr-2 *:text-slate-600'>
-        <div>Пн</div>
-        <div>Вт</div>
-        <div>Ср</div>
-        <div>Чт</div>
-        <div>Пт</div>
-        <div>Сб</div>
-        <div>Вс</div>
-      </div>
-      <div className={classes.grid + ' relative'}>
-        <div className={classes.timeRow}>
-          {new Array(18).fill(0).map((_, i) => (
-            <div className={classes.time}>
-              <div className='mb-5 -ml-1 absolute text-slate-600'>
-                {i + 6 + ':00'}
-              </div>
-              <div className={classes.hourMark}></div>
-              <div className={classes.quarterMark}></div>
-              <div className={classes.halfMark}></div>
-              <div className={classes.quarterMark}></div>
-              <div></div>
+    <div className='w-full h-full p-4 mt-2 z-10'>
+      <div
+        className='w-full h-full flex'
+        onWheel={scrollHandler}
+        // onMouseMove={console.log}
+      >
+        <div className='mt-9 *:flex *:items-center mr-2 *:text-slate-600'>
+          {DAYS.map((dayCode) => (
+            <div key={dayCode} style={{ height: GRID_SIZE }}>
+              {DAYS_NAMES[dayCode]}
             </div>
           ))}
         </div>
-
-        <div className='relative border-t border-slate-300'>
-          <div className={classes.layerGrid}>
-            {lessons.map((lesson) => (
-              <Lesson
-                key={lesson.id}
-                lessonData={lesson}
-                onLessonChanged={onLessonChanged}
-              />
+        <div
+          ref={ref}
+          className='relative overflow-x-auto overflow-y-hidden pb-6 pl-1'
+        >
+          <div
+            style={{ gridTemplateColumns: `repeat(${HOURS}, ${GRID_SIZE}px)` }}
+            className={classes.timeRow + ' *:border-b border-slate-200'}
+          >
+            {new Array(HOURS).fill(0).map((_, i) => (
+              <div
+                key={i}
+                style={{ width: GRID_SIZE }}
+                className={classes.time}
+              >
+                <div className='mb-5 -ml-1 absolute text-slate-600'>
+                  {i + TIME_RANGE_FROM + ':00'}
+                </div>
+                <div className={classes.hourMark}></div>
+                <div className={classes.quarterMark}></div>
+                <div className={classes.halfMark}></div>
+                <div className={classes.quarterMark}></div>
+                <div></div>
+              </div>
             ))}
           </div>
-          {/* Рисуем таблицу */}
-          {new Array(7).fill(0).map((_, rowIndex) => (
-            <div key={rowIndex} className={classes.row}>
-              {new Array(18).fill(0).map((_, cellIndex) => (
-                <div className='w-16 h-16 flex relative items-center border-b border-r border-slate-200 last:border-r-0'></div>
+
+          <div className='relative'>
+            <div
+              style={{
+                gridTemplateColumns: `repeat(${HOURS * 4}, ${GRID_SIZE / 4}px)`,
+                gridTemplateRows: `repeat(${DAYS.length}, ${GRID_SIZE}px)`,
+              }}
+              className={classes.layerGrid + ' w-full h-full'}
+            >
+              {lessons.map((lesson) => (
+                <Lesson
+                  boardData={{
+                    timeRangeFrom: TIME_RANGE_FROM,
+                    hours: HOURS,
+                    gridSize: GRID_SIZE,
+                    days: DAYS,
+                    daysNames: DAYS_NAMES,
+                    ref,
+                  }}
+                  key={lesson.id}
+                  lessonData={lesson}
+                  onLessonChanged={onLessonChanged}
+                />
               ))}
             </div>
-          ))}
+            {/* Рисуем таблицу */}
+            <div
+              style={{
+                gridTemplateColumns: `repeat(${HOURS}, ${GRID_SIZE}px)`,
+                gridTemplateRows: `repeat(${DAYS.length}, ${GRID_SIZE}px)`,
+              }}
+              className='grid w-fit h-fit border-l border-slate-200'
+            >
+              {new Array(DAYS.length * HOURS).fill(0).map((_, cellIndex) => (
+                <div
+                  key={cellIndex}
+                  // style={{ height: GRID_SIZE, width: GRID_SIZE }}
+                  className='w-full h-full flex relative items-center border-b border-r border-slate-200'
+                ></div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
