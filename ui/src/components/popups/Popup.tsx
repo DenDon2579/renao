@@ -33,7 +33,7 @@ const Popup = (props: Props) => {
       className='fixed w-full h-full flex justify-center items-center cursor-pointer'
       ref={popupOverlay}
     >
-      <div className='bg-white rounded-lg relative shadow-sm border border-indigo-200 shadow-indigo-100 cursor-default lg:max-w-screen-lg max-w-screen-sm'>
+      <div className='bg-white rounded-lg relative shadow-sm border border-indigo-200 shadow-indigo-100 cursor-default lg:max-w-screen-lg xl:max-w-screen-xl max-w-screen-sm 2xl:max-w-screen-2xl'>
         <div className='border-b border-slate-200 flex justify-center items-center'>
           <div
             className='absolute right-0 m-2'
@@ -48,7 +48,7 @@ const Popup = (props: Props) => {
             <h2 className='text-2xl text-slate-800'>{props.title}</h2>
           </div>
         </div>
-        <div className='flex'>
+        <div className='flex w-full h-auto'>
           <Routes>
             <Route
               path='/schedule'

@@ -1,8 +1,13 @@
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import classes from './Schedule.module.css';
 import Students from '../Students';
-import ScheduleCell from './ScheduleCell';
 import Lesson from './Lesson';
+import VisualGrid from './VisualGrid';
+import LessonsGrid from './LessonsGrid';
+import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
+import { TbUserCircle } from 'react-icons/tb';
+import StudentInfo from '../StudentInfo';
+import LessonDetails from './LessonDetails';
 
 type Props = {};
 export interface ILesson {
@@ -19,15 +24,15 @@ const lessonsEx: ILesson[] = [
     id: '1',
     studentID: '2323',
     studentName: 'Владик 6 класс',
-    day: 3,
-    hour: 7,
+    day: 5,
+    hour: 15,
     minute: 0,
     duration: 3,
   },
   {
     id: '2',
     studentID: '2323',
-    studentName: 'Владиславовичмнбек 1 класс',
+    studentName: 'ОченьДлинноеИмя 11 класс',
     day: 3,
     hour: 11,
     minute: 0,
@@ -35,10 +40,10 @@ const lessonsEx: ILesson[] = [
   },
 ];
 
-const GRID_SIZE = 64;
+const GRID_SIZE = 80;
 const TIME_RANGE_FROM = 10;
-const HOURS = 11;
-const DAYS = [0, 1, 2, 3, 4, 5];
+const HOURS = 12;
+const DAYS = [0, 1, 2, 3, 4, 5, 6];
 const DAYS_NAMES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 const Schedule = (props: Props) => {
@@ -54,9 +59,10 @@ const Schedule = (props: Props) => {
       return false;
     })
   );
-  const [phantomLesson, setPhantomLesson] = useState<HTMLDivElement>();
 
-  const onLessonChanged = (newLessonData: ILesson) => {
+  const [selectedLessonID, setSelectedLessonID] = useState<null | string>(null);
+
+  const onLessonChange = (newLessonData: ILesson) => {
     setLessons((prev) => {
       return prev.map((lesson) => {
         if (lesson.id === newLessonData.id) {
@@ -77,10 +83,18 @@ const Schedule = (props: Props) => {
     }
   };
 
+  const onLessonSelect = (id: string) => {
+    if (id === selectedLessonID) {
+      setSelectedLessonID(null);
+    } else {
+      setSelectedLessonID(id);
+    }
+  };
+
   return (
-    <div className='w-full h-full p-4 mt-2 z-10'>
+    <div className='w-full h-full p-4 z-10 flex'>
       <div
-        className='w-full h-full flex'
+        className='h-full flex relative xl:min-w-screen-md 2xl:min-w-screen-lg lg:min-w-96 md:min-w-52 min-w-0'
         onWheel={scrollHandler}
         // onMouseMove={console.log}
       >
@@ -93,11 +107,11 @@ const Schedule = (props: Props) => {
         </div>
         <div
           ref={ref}
-          className='relative overflow-x-auto overflow-y-hidden pb-6 pl-1'
+          className='relative overflow-x-auto overflow-y-hidden pb-6 pr-6 pl-1'
         >
           <div
             style={{ gridTemplateColumns: `repeat(${HOURS}, ${GRID_SIZE}px)` }}
-            className={classes.timeRow + ' *:border-b border-slate-200'}
+            className={'grid *:border-b border-slate-200'}
           >
             {new Array(HOURS).fill(0).map((_, i) => (
               <div
@@ -116,50 +130,46 @@ const Schedule = (props: Props) => {
               </div>
             ))}
           </div>
+          <div
+            className='relative'
+            // onMouse={(e) => {
+            //   if (selectedLessonID && e.currentTarget.ariaLabel !== 'lesson')
+            //     setSelectedLessonID(null);
+            // }}
+          >
+            <LessonsGrid
+              days={DAYS}
+              daysNames={DAYS_NAMES}
+              gridSize={GRID_SIZE}
+              hoursCount={HOURS}
+              lessons={lessons}
+              startHour={TIME_RANGE_FROM}
+              boardRef={ref}
+              onLessonChange={onLessonChange}
+              onLessonSelect={onLessonSelect}
+              selectedLessonID={selectedLessonID}
+            />
 
-          <div className='relative'>
-            <div
-              style={{
-                gridTemplateColumns: `repeat(${HOURS * 4}, ${GRID_SIZE / 4}px)`,
-                gridTemplateRows: `repeat(${DAYS.length}, ${GRID_SIZE}px)`,
-              }}
-              className={classes.layerGrid + ' w-full h-full'}
-            >
-              {lessons.map((lesson) => (
-                <Lesson
-                  boardData={{
-                    timeRangeFrom: TIME_RANGE_FROM,
-                    hours: HOURS,
-                    gridSize: GRID_SIZE,
-                    days: DAYS,
-                    daysNames: DAYS_NAMES,
-                    ref,
-                  }}
-                  key={lesson.id}
-                  lessonData={lesson}
-                  onLessonChanged={onLessonChanged}
-                />
-              ))}
-            </div>
-            {/* Рисуем таблицу */}
-            <div
-              style={{
-                gridTemplateColumns: `repeat(${HOURS}, ${GRID_SIZE}px)`,
-                gridTemplateRows: `repeat(${DAYS.length}, ${GRID_SIZE}px)`,
-              }}
-              className='grid w-fit h-fit border-l border-slate-200'
-            >
-              {new Array(DAYS.length * HOURS).fill(0).map((_, cellIndex) => (
-                <div
-                  key={cellIndex}
-                  // style={{ height: GRID_SIZE, width: GRID_SIZE }}
-                  className='w-full h-full flex relative items-center border-b border-r border-slate-200'
-                ></div>
-              ))}
-            </div>
+            <VisualGrid
+              gridSize={GRID_SIZE}
+              daysCount={DAYS.length}
+              hoursCount={HOURS}
+            />
           </div>
         </div>
+        {selectedLessonID && (
+          <LessonDetails
+            selectedLesson={
+              lessons.find(
+                (lesson) => lesson.id === selectedLessonID
+              ) as ILesson
+            }
+            onLessonChange={onLessonChange}
+            onHide={() => setSelectedLessonID(null)}
+          />
+        )}
       </div>
+      {/* <StudentInfo selectedStudentID={null} /> */}
     </div>
   );
 };

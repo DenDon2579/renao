@@ -14,7 +14,7 @@ const students = [
 
 const StudentInfo = (props: Props) => {
   return (
-    <div className='h-96 w-96 p-2 flex justify-center'>
+    <div className='h-96 w-96 p-2 flex justify-center flex-shrink-0'>
       {!props.selectedStudentID ? (
         <span className='text-slate-500 mt-3'>
           Выберите ученика для просмотра информации

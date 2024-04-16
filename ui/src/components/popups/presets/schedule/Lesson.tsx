@@ -4,7 +4,9 @@ import { DateTime, Duration } from 'luxon';
 type Props = {
   lessonData: ILesson;
   // onMouseEnterLesson(): void;
-  onLessonChanged(newLesson: ILesson): void;
+  onLessonChange(newLesson: ILesson): void;
+  onLessonSelect(id: string): void;
+  isSelected: boolean;
   boardData: {
     timeRangeFrom: number;
     hours: number;
@@ -16,7 +18,13 @@ type Props = {
   };
 };
 
-const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
+const Lesson = ({
+  lessonData,
+  onLessonChange,
+  boardData,
+  onLessonSelect,
+  isSelected,
+}: Props) => {
   const [isResizeButtonsVisible, setIsResizeButtonsVisible] = useState(false);
   const [additionalDuration, setAdditionalDuration] = useState(0);
   const [isResizeMode, setIsresizeMode] = useState(false);
@@ -29,7 +37,7 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
   }>(null);
 
   const [scrollOffset, setScrollOffset] = useState(0);
-
+  console.log(boardData.ref);
   useEffect(() => {
     if (boardData.ref.current) {
       let scrollOffset = boardData.ref.current.scrollLeft;
@@ -177,12 +185,17 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
     if (resizeDirection === 'r') {
       if (
         lessonStart + lessonDuration + offsetX <= boardData.hours * 4 + 1 &&
-        lessonDuration + offsetX >= 3
+        lessonDuration + offsetX >= 3 &&
+        lessonDuration + offsetX <= 16
       )
         // Проверяем на выход за правую границу и длину
         setAdditionalDuration(offsetX);
     } else {
-      if (lessonStart + offsetX > 0 && lessonDuration - offsetX >= 3) {
+      if (
+        lessonStart + offsetX > 0 &&
+        lessonDuration - offsetX >= 3 &&
+        lessonDuration - offsetX <= 16
+      ) {
         // Проверяем на выход за левую границу и длину
         setAdditionalDuration(-offsetX);
         setOffset((prev) => ({
@@ -197,7 +210,7 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
   const dropHandler = (e: React.DragEvent<HTMLDivElement>) => {
     setIsResizeButtonsVisible(true);
     if (isResizeMode && resizeDirection === 'r') {
-      onLessonChanged({
+      onLessonChange({
         ...lessonData,
         duration: lessonData.duration + additionalDuration / 4,
       });
@@ -214,7 +227,7 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
       .toObject();
 
     if (newHour && newMinute !== undefined)
-      onLessonChanged({
+      onLessonChange({
         ...lessonData,
         hour: newHour,
         minute: newMinute,
@@ -282,7 +295,12 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
         onMouseLeave={() => setIsResizeButtonsVisible(false)}
         onMouseDown={() => setIsResizeButtonsVisible(false)}
         onMouseUp={() => setIsResizeButtonsVisible(true)}
-        className='active:-translate-y-0.5 transition-all pointer-events-auto cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 hover:border-indigo-300 bg-white border active:border-indigo-300 border-indigo-200 shadow-sm active:shadow-md active:shadow-indigo-100 shadow-indigo-100 rounded-md flex justify-center items-center text-center hover:bg-slate-50'
+        onClick={() => onLessonSelect(lessonData.id)}
+        aria-label='lesson'
+        className={
+          (isSelected ? '!bg-indigo-50 !border-indigo-300 !border-2 ' : '') +
+          'active:-translate-y-0.5 transition-all cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 hover:border-indigo-300 bg-white border active:border-indigo-300 border-indigo-200 shadow-sm active:shadow-md active:shadow-indigo-100 shadow-indigo-100 rounded-md flex justify-center items-center text-center hover:bg-slate-50'
+        }
       >
         {isResizeButtonsVisible && (
           <>
@@ -309,21 +327,7 @@ const Lesson = ({ lessonData, onLessonChanged, boardData }: Props) => {
           }}
           className='px-1 text-slate-800'
         >
-          {!isResizeButtonsVisible
-            ? lessonData.studentName.length >=
-              (lessonDuration + additionalDuration) * 2.5
-              ? lessonData.studentName.slice(
-                  0,
-                  (lessonDuration + additionalDuration) * 2.5
-                ) + '..'
-              : lessonData.studentName
-            : lessonData.studentName.length >=
-              (lessonDuration + additionalDuration) * 6
-            ? lessonData.studentName.slice(
-                0,
-                (lessonDuration + additionalDuration) * 6
-              ) + '..'
-            : lessonData.studentName}
+          {lessonData.studentName}
         </span>
       </div>
     </div>
