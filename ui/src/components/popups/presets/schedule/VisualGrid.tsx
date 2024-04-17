@@ -4,11 +4,13 @@ type Props = {
   gridSize: number;
   hoursCount: number;
   daysCount: number;
+  onClick(): void;
 };
 
-const VisualGrid = ({ gridSize, hoursCount, daysCount }: Props) => {
+const VisualGrid = ({ gridSize, hoursCount, daysCount, onClick }: Props) => {
   return (
     <div
+      onClick={onClick}
       style={{
         gridTemplateColumns: `repeat(${hoursCount}, ${gridSize}px)`,
         gridTemplateRows: `repeat(${daysCount}, ${gridSize}px)`,

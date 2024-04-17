@@ -3,6 +3,7 @@ import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
 import { TbArrowsRightLeft, TbMinus, TbUserCircle } from 'react-icons/tb';
 import { ILesson } from './Schedule';
 import { Duration } from 'luxon';
+import classes from './Schedule.module.css';
 import Popup from '../../Popup';
 
 type Props = {
@@ -104,18 +105,30 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
           </div>
         </div>
         <h3 className='text-lg text-center'>Продолжительность</h3>
-        <div className='flex items-center justify-between border border-slate-200 rounded-md h-10 py-1 px-2 mt-1'>
-          <div className='rounded-md flex items-center w-full flex-col'>
+        <div className='flex items-center justify-between h-auto py-1 mt-1'>
+          <div className='rounded-md flex items-center w-full h-full justify-center'>
             <input
+              style={{
+                background: `linear-gradient(to right, #C7D2FE ${
+                  ((selectedLesson.duration * 60 - 45) / 195) * 100
+                }%, transparent ${
+                  ((selectedLesson.duration * 60 - 45) / 195) * 100
+                }%)`,
+              }}
               onChange={durationChangeHandler}
               value={selectedLesson.duration * 60}
               type='range'
               min={45}
               max={240}
               step={15}
-              className='w-full h-full border border-slate-200 rounded-md pl-1.5 p-0.5 cursor-pointer'
+              className={
+                classes.durationInput +
+                ' w-full h-10 cursor-pointer rounded-md border border-slate-200 bg-indigo-200 transition-all'
+              }
             />
-            <span>{durationTimeString}</span>
+            <span className='absolute pointer-events-none'>
+              {durationTimeString}
+            </span>
           </div>
         </div>
       </div>

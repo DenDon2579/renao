@@ -47,3 +47,24 @@
   border: 1px solid #b7b7b7;
   border-radius: 8px;
 }
+
+.durationInput {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  /* background: linear-gradient(to right, red, yellow, green); */
+}
+
+.durationInput::-webkit-slider-runnable-track {
+  height: 100%;
+}
+
+.durationInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: inherit;
+  background-color: #e2e8f0;
+  height: 100%;
+  width: 1px;
+}

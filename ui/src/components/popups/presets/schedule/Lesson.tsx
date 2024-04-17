@@ -152,6 +152,8 @@ const Lesson = ({
     }
   };
 
+  useEffect(() => setTimeLabel());
+
   const setTimeLabel = () => {
     const lessonStartTimeString = Duration.fromObject({
       hours: lessonData.hour,
@@ -258,7 +260,7 @@ const Lesson = ({
       y: 0,
     });
   };
-
+  console.log(isResizeButtonsVisible);
   return (
     <div
       key={lessonData.id}
@@ -273,13 +275,17 @@ const Lesson = ({
           (resizeDirection === 'r' ? additionalDuration : 0),
 
         gridRowStart: lessonDay + 1 + (!isResizeMode ? offset.y : 0),
+        width: '101%',
+        zIndex: isResizeButtonsVisible || isSelected || isDragging ? 50 : 30,
       }}
-      className='w-full h-full p-0.5 z-30 relative flex justify-center active:z-50'
+      className='h-full p-0.5 relative flex justify-center'
       ref={q}
     >
       <div
         className={`${
-          isDragging ? 'opacity-100' : 'opacity-0'
+          isDragging || isResizeButtonsVisible || isSelected
+            ? 'opacity-100'
+            : 'opacity-0'
         } transition-opacity p-0.5 rounded-md w-auto h-6 absolute -bottom-7 z-40 text-sm text-nowrap bg-white text-slate-400 leading-none`}
       >
         {lessonTimeString}
