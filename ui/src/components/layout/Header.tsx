@@ -21,7 +21,7 @@ const Header = (props: Props) => {
       <div className='h-full w-auto flex *:relative *:h-12 *:w-auto *:p-2 *:mr-2 *:flex *:items-center *:justify-center'>
         <ButtonPrimary>
           <NavLink to='/' className='flex items-center'>
-            <TbHome size={32} className='text-slate-400' />
+            <TbHome size={32} className='text-slate-500' />
             <span className='ml-1 text-slate-600 text-base font-medium'>
               Главная
             </span>
@@ -29,7 +29,7 @@ const Header = (props: Props) => {
         </ButtonPrimary>
         <ButtonPrimary>
           <NavLink to='/board' className='flex items-center'>
-            <TbEdit size={32} className='text-slate-400' />
+            <TbEdit size={32} className='text-slate-500' />
             <span className='ml-1 text-slate-600 text-base font-medium'>
               Доска
             </span>
@@ -37,7 +37,7 @@ const Header = (props: Props) => {
         </ButtonPrimary>
         <ButtonPrimary>
           <NavLink to='/schedule' className='flex items-center'>
-            <TbCalendar size={32} className='text-slate-400' />
+            <TbCalendar size={32} className='text-slate-500' />
             <span className='ml-1 text-slate-600 text-base font-medium'>
               Расписание
             </span>
@@ -45,7 +45,7 @@ const Header = (props: Props) => {
         </ButtonPrimary>
         <ButtonPrimary>
           <NavLink to='/students' className='flex items-center'>
-            <TbUsers size={32} className='text-slate-400' />
+            <TbUsers size={32} className='text-slate-500' />
             <span className='ml-1 text-slate-600 text-base font-medium'>
               Ученики
             </span>
@@ -53,7 +53,7 @@ const Header = (props: Props) => {
         </ButtonPrimary>
         <ButtonPrimary className='!mr-0'>
           <NavLink to='/settings' className='flex items-center'>
-            <TbSettings size={32} className='text-slate-400' />
+            <TbSettings size={32} className='text-slate-500' />
             <span className='ml-1 text-slate-600 text-base font-medium'>
               Настройки
             </span>

@@ -95,6 +95,10 @@ textarea {
   outline: none;
 }
 
+input[type='time']::-webkit-calendar-picker-indicator {
+  background: none;
+}
+
 button,
 input {
   /* 1 */

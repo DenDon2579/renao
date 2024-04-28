@@ -1,12 +1,12 @@
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import classes from './Schedule.module.css';
-import Students from '../Students';
+import Students from '../students/Students';
 import Lesson from './Lesson';
 import VisualGrid from './VisualGrid';
 import LessonsGrid from './LessonsGrid';
 import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
-import { TbUserCircle } from 'react-icons/tb';
-import StudentInfo from '../StudentInfo';
+import { TbPlus, TbSettings, TbUserCircle } from 'react-icons/tb';
+import StudentInfo from '../students/StudentInfo';
 import LessonDetails from './LessonDetails';
 
 type Props = {};
@@ -121,7 +121,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '12',
-    studentID: '12',
+    studentID: '2',
     studentName: 'Арсений',
     day: 3,
     hour: 15,
@@ -130,7 +130,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '13',
-    studentID: '13',
+    studentID: '12',
     studentName: 'Ильнара',
     day: 3,
     hour: 17,
@@ -139,7 +139,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '14',
-    studentID: '14',
+    studentID: '13',
     studentName: 'Николай',
     day: 3,
     hour: 18,
@@ -148,7 +148,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '15',
-    studentID: '15',
+    studentID: '8',
     studentName: 'Степан',
     day: 3,
     hour: 19,
@@ -166,7 +166,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '17',
-    studentID: '16',
+    studentID: '4',
     studentName: 'Полина',
     day: 4,
     hour: 11,
@@ -184,7 +184,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '19',
-    studentID: '17',
+    studentID: '14',
     studentName: 'Рауль',
     day: 4,
     hour: 18,
@@ -229,7 +229,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '24',
-    studentID: '18',
+    studentID: '15',
     studentName: 'Даня',
     day: 5,
     hour: 14,
@@ -238,7 +238,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '25',
-    studentID: '19',
+    studentID: '16',
     studentName: 'Азамат',
     day: 5,
     hour: 15,
@@ -247,7 +247,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '26',
-    studentID: '13',
+    studentID: '12',
     studentName: 'Ильнара',
     day: 5,
     hour: 17,
@@ -256,7 +256,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '27',
-    studentID: '20',
+    studentID: '17',
     studentName: 'Назар',
     day: 6,
     hour: 11,
@@ -265,7 +265,7 @@ const lessonsEx: ILesson[] = [
   },
   {
     id: '28',
-    studentID: '21',
+    studentID: '2',
     studentName: 'Арсений',
     day: 6,
     hour: 12,
@@ -284,13 +284,12 @@ const Schedule = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [lessons, setLessons] = useState<ILesson[]>(
     lessonsEx.filter((lesson) => {
-      if (
+      return (
         lesson.hour >= TIME_RANGE_FROM &&
-        lesson.hour + lesson.duration <= TIME_RANGE_FROM + HOURS
-      ) {
-        return true;
-      }
-      return false;
+        lesson.hour + lesson.minute / 60 + lesson.duration <=
+          TIME_RANGE_FROM + HOURS &&
+        DAYS.includes(lesson.day)
+      );
     })
   );
 
@@ -326,11 +325,13 @@ const Schedule = (props: Props) => {
   };
 
   return (
-    <div className='w-full h-full p-4 z-10 flex'>
+    <div className='w-full h-full p-4 z-10 flex relative'>
+      <ButtonPrimary className='h-10 w-10 shrink-0 absolute top-2 right-2 z-30'>
+        <TbSettings size={22} className='text-slate-500' />
+      </ButtonPrimary>
       <div
         className='h-full flex relative xl:min-w-screen-md 2xl:min-w-screen-lg lg:min-w-96 md:min-w-52 min-w-0'
         onWheel={scrollHandler}
-        // onMouseMove={console.log}
       >
         <div className='mt-9 *:flex *:items-center mr-2 *:text-slate-600'>
           {DAYS.map((dayCode) => (
@@ -341,7 +342,7 @@ const Schedule = (props: Props) => {
         </div>
         <div
           ref={ref}
-          className='relative overflow-x-auto overflow-y-hidden pb-6 pr-6 pl-1'
+          className='relative overflow-x-auto overflow-y-hidden pb-6 pr-10 pl-1'
         >
           <div
             style={{ gridTemplateColumns: `repeat(${HOURS}, ${GRID_SIZE}px)` }}

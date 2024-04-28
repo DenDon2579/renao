@@ -63,22 +63,8 @@ const Lesson = ({
     (lessonData.hour - boardData.timeRangeFrom) * 4 +
     lessonData.minute / 15 +
     1; //Преобразовываем время (в часах и минутах) в четверти часа
-  const lessonDuration = lessonData.duration * 4; //Получаем длительность урока в четвертяъ часа
+  const lessonDuration = lessonData.duration * 4; //Получаем длительность урока в четвертяx часа
   const lessonDay = boardData.days.indexOf(lessonData.day);
-
-  // useEffect(() => {
-  //   console.log('SCROLLED');
-  //   if (boardData.ref.current) {
-  //     setOffset((prev) => ({
-  //       ...prev,
-  //       x:
-  //         prev.x +
-  //         Math.floor(
-  //           boardData.ref.current.scrollLeft / (boardData.gridSize / 4)
-  //         ),
-  //     }));
-  //   }
-  // }, [boardData?.ref?.current?.scrollLeft]);
 
   const whileDragHandler = (e: React.DragEvent<HTMLDivElement>) => {
     // if (!boardData.ref.current) {

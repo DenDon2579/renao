@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Students from './presets/Students';
+import Students from './presets/students/Students';
 import { TbX } from 'react-icons/tb';
 import Schedule from './presets/schedule/Schedule';
-import StudentInfo from './presets/StudentInfo';
+import StudentInfo from './presets/students/StudentInfo';
 import { Route, Routes } from 'react-router-dom';
+import Settings from './presets/settings/Settings';
 
 type Props = {
   title: string;
@@ -58,7 +59,23 @@ const Popup = (props: Props) => {
                 </>
               }
             />
-            <Route path='/students' element={<Students />} />
+            <Route
+              path='/students'
+              element={
+                <div className='h-96'>
+                  <Students withDetails />
+                </div>
+              }
+            />
+
+            <Route
+              path='/settings'
+              element={
+                <>
+                  <Settings />
+                </>
+              }
+            />
           </Routes>
         </div>
       </div>

@@ -7,7 +7,7 @@ type Props = {};
 const Invite = (props: Props) => {
   const { inviteCode } = useParams();
   return (
-    <div className='w-full h-full bg-slate-50 flex justify-center items-center'>
+    <div className='w-full h-full bg-white flex justify-center items-center'>
       <h1 className='m-0 p-4 leading-none text-center mr-[-.8rem] tracking-[.8rem] text-slate-800 absolute top-0'>
         RENAO
       </h1>
@@ -19,11 +19,15 @@ const Invite = (props: Props) => {
             учеником
           </span>
         </div>
+        <span className='text-base text-slate-600 mt-4 mb-1'>
+          Код приглашения: <b>{inviteCode}</b>
+        </span>
         <ButtonPrimary className='w-56 mt-1'>
           <span className='text-slate-700 font-semibold'>Продолжить</span>
         </ButtonPrimary>
-        <span className='text-sm text-slate-400 w-64 text-center mt-1'>
-          Нажимая кнопку, вы принимаете{' '}
+        <span className='text-sm text-slate-400 w-80 text-center mt-1'>
+          Нажимая кнопку 'Продолжить', вы принимаете
+          <br />
           <a className='text-slate-500 font-semibold cursor-pointer'>
             пользовательское соглашение
           </a>

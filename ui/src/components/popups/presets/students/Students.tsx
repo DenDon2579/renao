@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { TbUserCircle, TbDots } from 'react-icons/tb';
 import StudentInfo from './StudentInfo';
-import ButtonPrimary from '../../uiKit/buttons/ButtonPrimary';
+import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
+import { useAppSelector } from '../../../../hooks/redux';
 
-type Props = {};
+type Props = {
+  withDetails: boolean;
+};
 
-const Students = (props: Props) => {
-  const students = [
-    { id: '1', name: 'Владиксуперогалик 11 класс' },
-    { id: '2', name: 'Иванмбек 12 класс' },
-    { id: '3', name: 'Керил 4 класс' },
-    { id: '4', name: 'Влад 1 класс' },
-  ];
+const Students = ({ withDetails }: Props) => {
+  const students = useAppSelector((state) => state.users.students);
 
   const [selectedStudentID, setSelectedStudentID] = useState<null | string>(
     null
   );
   return (
-    <div className='flex'>
-      <div className='w-72 h-96 p-2 border-r border-slate-200 flex flex-col'>
+    <div className='flex h-full'>
+      <div
+        className={
+          'w-72 h-full p-2 flex flex-col' +
+          (withDetails ? ' border-r border-slate-200' : '')
+        }
+      >
         <div className='mb-2 h-10'>
           <input
             placeholder='Поиск учеников'
@@ -43,8 +46,7 @@ const Students = (props: Props) => {
         </div>
         <ButtonPrimary className='mt-2'>Добавить ученика</ButtonPrimary>
       </div>
-
-      <StudentInfo selectedStudentID={selectedStudentID} />
+      {withDetails && <StudentInfo selectedStudentID={selectedStudentID} />}
     </div>
   );
 };

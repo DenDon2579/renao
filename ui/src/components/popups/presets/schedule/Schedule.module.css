@@ -18,9 +18,9 @@
   align-items: flex-end;
   justify-content: space-between;
   border-left: 1px solid rgba(0, 0, 0, 0.3);
-  &:last-child {
+  /* &:last-child {
     border-right: 1px solid rgba(0, 0, 0, 0.3);
-  }
+  } */
 }
 .hourMark {
   height: 20px;
@@ -64,7 +64,6 @@
   -webkit-appearance: none;
   appearance: none;
   border-radius: inherit;
-  background-color: #e2e8f0;
   height: 100%;
   width: 1px;
 }

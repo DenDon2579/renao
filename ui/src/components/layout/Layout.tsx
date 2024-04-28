@@ -17,7 +17,7 @@ const Layout = (props: Props) => {
             <>
               <Header />
               <Content />
-              <Popup title='Расписание' />
+              <Popup title='Настройки' />
             </>
           }
         />

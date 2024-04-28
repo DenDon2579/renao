@@ -1,16 +1,17 @@
 import React from 'react';
 import { TbUserCircle } from 'react-icons/tb';
+import { useAppSelector } from '../../../../hooks/redux';
 
 type Props = {
   selectedStudentID: string | null;
 };
 
-const students = [
-  { id: 1, name: 'Владиксуперогалик 11 класс' },
-  { id: 2, name: 'Иванмбек 12 класс' },
-  { id: 3, name: 'Мастурбек 4 класс' },
-  { id: 4, name: 'Влад 1 класс' },
-];
+// const students = [
+//   { id: 1, name: 'Владиксуперогалик 11 класс' },
+//   { id: 2, name: 'Иванмбек 12 класс' },
+//   { id: 3, name: 'Мастурбек 4 класс' },
+//   { id: 4, name: 'Влад 1 класс' },
+// ];
 
 const StudentInfo = (props: Props) => {
   return (
