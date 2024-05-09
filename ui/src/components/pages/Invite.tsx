@@ -13,13 +13,15 @@ const Invite = (props: Props) => {
       </h1>
       <div className='w-auto h-auto rounded-md pb-2 flex flex-col items-center'>
         <div className='flex items-center flex-col justify-center '>
-          <span className='text-slate-700 text-3xl mb-4'>Привет!</span>
+          <span className='text-slate-700 text-3xl mb-4'>
+            Привет, <b className='font-semibold'>Арсений</b>!
+          </span>
           <span className='text-slate-700 text-xl w-56 text-center'>
-            <b className='font-semibold'>{'{Имя}'}</b> приглашает тебя стать его
-            учеником
+            <b className='font-semibold'>Ренал</b> приглашает тебя
+            присоедениться к занятиям
           </span>
         </div>
-        <span className='text-base text-slate-600 mt-4 mb-1'>
+        <span className='text-base text-slate-600 mt-2 mb-1'>
           Код приглашения: <b>{inviteCode}</b>
         </span>
         <ButtonPrimary className='w-56 mt-1'>

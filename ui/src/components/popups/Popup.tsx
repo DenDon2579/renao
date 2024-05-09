@@ -29,7 +29,7 @@ const Popup = (props: Props) => {
   return isVisible ? (
     <div
       style={{
-        background: 'rgba(0,0,0,0.05)',
+        background: 'rgba(0,0,0,0.025)',
       }}
       className='fixed w-full h-full flex justify-center items-center cursor-pointer'
       ref={popupOverlay}

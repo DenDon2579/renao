@@ -79,7 +79,9 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
         ref={ref}
         className='w-60 h-full flex-shrink-0 bg-white bg-opacity-90 shadow-md shadow-indigo-100 rounded-md border border-indigo-100 p-2 flex flex-col'
       >
-        <h3 className='text-xl text-center mb-2 text-slate-800'>Занятие с</h3>
+        <h3 className='text-xl text-center mb-2 text-slate-800'>
+          {selectedLesson.studentID ? 'Занятие с' : 'Занятие'}
+        </h3>
         <div className='overflow-auto flex flex-col flex-grow'>
           <div className='flex'>
             <ButtonPrimary
@@ -144,7 +146,9 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
             <div className='rounded-md flex items-center w-full h-full justify-center relative'>
               <input
                 style={{
-                  background: `linear-gradient(to right, #C7D2FE ${
+                  background: `linear-gradient(to right, ${
+                    selectedLesson.studentID ? '#C7D2FE' : '#FDE68A'
+                  } ${
                     ((selectedLesson.duration * 60 - 45) / 195) * 100
                   }%, transparent ${
                     ((selectedLesson.duration * 60 - 45) / 195) * 100

@@ -16,6 +16,8 @@ type Props = {
     gridSize: number;
     ref: React.RefObject<HTMLDivElement>;
   };
+  onLessonMouseEnter(): void;
+  onLessonMouseLeave(): void;
 };
 
 const Lesson = ({
@@ -24,6 +26,8 @@ const Lesson = ({
   boardData,
   onLessonSelect,
   isSelected,
+  onLessonMouseEnter,
+  onLessonMouseLeave,
 }: Props) => {
   const [isResizeButtonsVisible, setIsResizeButtonsVisible] = useState(false);
   const [additionalDuration, setAdditionalDuration] = useState(0);
@@ -37,7 +41,6 @@ const Lesson = ({
   }>(null);
 
   const [scrollOffset, setScrollOffset] = useState(0);
-  console.log(boardData.ref);
   useEffect(() => {
     if (boardData.ref.current) {
       let scrollOffset = boardData.ref.current.scrollLeft;
@@ -79,7 +82,6 @@ const Lesson = ({
         boardSizes.x + scrollOffset + boardData.gridSize >
           e.currentTarget.getClientRects()[0].x + scrollOffset
       ) {
-        console.log('SCROLLED');
         e.currentTarget.scrollIntoView({
           behavior: 'auto',
           block: 'end',
@@ -158,7 +160,6 @@ const Lesson = ({
       })
       .normalize()
       .toFormat('h:mm');
-    console.log('OAKSDFOKASFKO');
     setLessonTimeString(
       `${
         boardData.daysNames[boardData.days[lessonDay + offset.y]]
@@ -246,10 +247,13 @@ const Lesson = ({
       y: 0,
     });
   };
-  console.log(isResizeButtonsVisible);
+
   return (
     <div
+      title='lesson'
       key={lessonData.id}
+      onMouseEnter={onLessonMouseEnter}
+      onMouseLeave={onLessonMouseLeave}
       style={{
         gridColumnStart:
           lessonStart +
@@ -270,15 +274,17 @@ const Lesson = ({
       <div
         className={`${
           isDragging || isResizeButtonsVisible || isSelected
-            ? 'opacity-100'
-            : 'opacity-0'
+            ? 'opacity-100 block'
+            : 'opacity-0 hidden'
         } transition-opacity p-0.5 rounded-md w-auto h-6 absolute -bottom-7 z-40 text-sm text-nowrap bg-white text-slate-400 leading-none`}
       >
         {lessonTimeString}
       </div>
 
       <div
-        title={lessonData.studentName}
+        title={
+          lessonData.studentID ? lessonData.studentName : 'Ученик не назначен'
+        }
         draggable
         onDragStart={dragStartHandler}
         onDrag={whileDragHandler}
@@ -290,19 +296,50 @@ const Lesson = ({
         onClick={() => onLessonSelect(lessonData.id)}
         aria-label='lesson'
         className={
-          (isSelected ? '!bg-indigo-50 !border-indigo-300 !border-2 ' : '') +
-          'active:-translate-y-0.5 transition-all cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 hover:border-indigo-300 bg-white border active:border-indigo-300 border-indigo-200 shadow-sm active:shadow-md active:shadow-indigo-100 shadow-indigo-100 rounded-md flex justify-center items-center text-center hover:bg-slate-50'
+          // (!lessonData.studentID ? '!border-amber-200 ' : '') +
+          // (isSelected ? '!bg-indigo-50 !border-indigo-300 !border-2 ' : '') +
+          `active:-translate-y-0.5 transition-all cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 ${
+            lessonData.studentID
+              ? 'hover:border-indigo-300'
+              : 'hover:border-amber-300'
+          } ${
+            !isSelected
+              ? 'bg-white'
+              : lessonData.studentID
+              ? '!bg-indigo-50'
+              : '!bg-amber-50'
+          } ${isSelected ? 'border-2' : 'border'}  ${
+            isSelected
+              ? lessonData.studentID
+                ? '!border-indigo-300'
+                : '!border-amber-300'
+              : lessonData.studentID
+              ? 'border-indigo-200'
+              : 'border-amber-200'
+          } shadow-sm active:shadow-md ${
+            lessonData.studentID ? 'shadow-indigo-100' : 'shadow-amber-100'
+          } rounded-md flex justify-center items-center text-center hover:bg-slate-50`
         }
       >
         {isResizeButtonsVisible && (
           <>
             <div
               onMouseDown={leftResizeHandler}
-              className='absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -left-1 cursor-w-resize hover:bg-indigo-200'
+              className={
+                'absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -left-1 cursor-w-resize hover:bg-indigo-200 ' +
+                (!lessonData.studentID
+                  ? '!bg-amber-100 !border-amber-300 hover:!bg-amber-200'
+                  : '')
+              }
             ></div>
             <div
               onMouseDown={rightResizeHandler}
-              className='absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -right-1 cursor-w-resize hover:bg-indigo-200'
+              className={
+                'absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -right-1 cursor-w-resize hover:bg-indigo-200 ' +
+                (!lessonData.studentID
+                  ? '!bg-amber-100 !border-amber-300 hover:!bg-amber-200'
+                  : '')
+              }
             ></div>
           </>
         )}
@@ -311,6 +348,7 @@ const Lesson = ({
           style={{
             wordBreak: 'break-word',
             fontSize:
+              lessonData.studentID &&
               isResizeButtonsVisible &&
               lessonData.studentName.length >=
                 (lessonDuration + additionalDuration) * 4
@@ -319,7 +357,11 @@ const Lesson = ({
           }}
           className='px-1 text-slate-800'
         >
-          {lessonData.studentName}
+          {lessonData.studentID ? (
+            lessonData.studentName
+          ) : (
+            <b className='font-semibold test-slate-700'>Нет ученика</b>
+          )}
         </span>
       </div>
     </div>

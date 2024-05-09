@@ -14,7 +14,7 @@ type Props = {};
 
 const Header = (props: Props) => {
   return (
-    <div className='h-16 w-auto p-2 fixed flex items-center justify-center'>
+    <div className='h-16 w-auto p-2 fixed flex items-center justify-center z-50'>
       {/* <h1 className='m-0 mt-1 p-4 leading-none text-2xl text-center mr-[-.8rem] tracking-[.8rem] text-slate-800 fixed top-0 left-0'>
         RENAO
       </h1> */}

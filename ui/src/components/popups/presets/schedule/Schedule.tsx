@@ -12,7 +12,7 @@ import LessonDetails from './LessonDetails';
 type Props = {};
 export interface ILesson {
   id: string;
-  studentID: string;
+  studentID: string | null;
   studentName: string;
   day: number;
   hour: number;
@@ -324,6 +324,21 @@ const Schedule = (props: Props) => {
     }
   };
 
+  const onLessonCreate = (day: number, hour: number, minute: number) => {
+    setLessons((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        studentID: null,
+        studentName: '',
+        day,
+        hour,
+        minute,
+        duration: 1,
+      },
+    ]);
+  };
+
   return (
     <div className='w-full h-full p-4 z-10 flex relative'>
       <ButtonPrimary className='h-10 w-10 shrink-0 absolute top-2 right-2 z-30'>
@@ -383,6 +398,7 @@ const Schedule = (props: Props) => {
               onLessonChange={onLessonChange}
               onLessonSelect={onLessonSelect}
               selectedLessonID={selectedLessonID}
+              onLessonCreate={onLessonCreate}
             />
 
             <VisualGrid
