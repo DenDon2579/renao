@@ -28,7 +28,7 @@ const Students = ({ withDetails }: Props) => {
             className='h-10 focus:outline-none text-base pr-2 pl-2 rounded-md w-full leading-none bg-white border border-slate-200 shadow-sm shadow-slate-100'
           />
         </div>
-        <div className='flex-grow overflow-auto'>
+        <div className='flex-grow pr-2 overflow-auto'>
           {students.map((student) => (
             <ButtonPrimary
               onClick={() => setSelectedStudentID(student.id)}
@@ -44,7 +44,9 @@ const Students = ({ withDetails }: Props) => {
             </ButtonPrimary>
           ))}
         </div>
-        <ButtonPrimary className='mt-2'>Добавить ученика</ButtonPrimary>
+        {withDetails && (
+          <ButtonPrimary className='mt-2'>Добавить ученика</ButtonPrimary>
+        )}
       </div>
       {withDetails && <StudentInfo selectedStudentID={selectedStudentID} />}
     </div>

@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ILesson } from './Schedule';
-import { DateTime, Duration } from 'luxon';
+import { ILesson } from '../Schedule';
+import { Duration } from 'luxon';
+import getLessonTimeString from '../../../../../utils/schedule/getLessonTimeString';
 type Props = {
   lessonData: ILesson;
   // onMouseEnterLesson(): void;
   onLessonChange(newLesson: ILesson): void;
-  onLessonSelect(id: string): void;
+  onLessonSelect(id: string, side: 'right' | 'left'): void;
   isSelected: boolean;
   boardData: {
     timeRangeFrom: number;
@@ -51,6 +52,8 @@ const Lesson = ({
     }
   }, [boardData.ref.current?.scrollLeft]);
 
+  useEffect(() => console.log('RERENDER:', lessonData.studentName));
+
   const [lessonTimeString, setLessonTimeString] = useState('');
   const q = useRef<HTMLDivElement>(null);
   const dragStartHandler = (e: React.DragEvent<HTMLDivElement>) => {
@@ -70,9 +73,6 @@ const Lesson = ({
   const lessonDay = boardData.days.indexOf(lessonData.day);
 
   const whileDragHandler = (e: React.DragEvent<HTMLDivElement>) => {
-    // if (!boardData.ref.current) {
-    //   return;
-    // }
     if (boardData.ref.current) {
       const boardSizes = boardData.ref.current.getClientRects()[0];
 
@@ -92,7 +92,7 @@ const Lesson = ({
 
     if (!e.clientX || !e.clientY || !dragStartPoint || !boardData.ref.current)
       return; //Если по какой-то причине координаты равны нулю или нет начальной точки, то ничего не делаем
-    let offsetX; // offsetX - смещение по горизонтали начала урока по четвертям часа (1/4 клетки)
+    let offsetX: number; // offsetX - смещение по горизонтали начала урока по четвертям часа (1/4 клетки)
     //Если shift зажат, что перемещаем по часам, иначе по четвертям часа
     if (e.shiftKey) {
       offsetX =
@@ -143,27 +143,16 @@ const Lesson = ({
   useEffect(() => setTimeLabel());
 
   const setTimeLabel = () => {
-    const lessonStartTimeString = Duration.fromObject({
-      hours: lessonData.hour,
-      minutes: lessonData.minute,
-    })
-      .plus({ minutes: 15 * offset.x })
-      .normalize()
-      .toFormat('h:mm');
+    const timeString = getLessonTimeString(
+      lessonData.hour,
+      lessonData.minute + 15 * offset.x,
+      (lessonDuration + additionalDuration) * 15
+    );
 
-    const lessonEndTimeString = Duration.fromObject({
-      hours: lessonData.hour,
-      minutes: lessonData.minute,
-    })
-      .plus({
-        minutes: 15 * offset.x + (lessonDuration + additionalDuration) * 15,
-      })
-      .normalize()
-      .toFormat('h:mm');
     setLessonTimeString(
       `${
         boardData.daysNames[boardData.days[lessonDay + offset.y]]
-      } ${lessonStartTimeString}-${lessonEndTimeString}`
+      } ${timeString}`
     );
   };
 
@@ -248,6 +237,22 @@ const Lesson = ({
     });
   };
 
+  const lessonSelectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    const boardBounding = boardData.ref.current?.getBoundingClientRect();
+
+    if (boardBounding?.x) {
+      let side: 'right' | 'left' = 'right';
+      const rightOffset = (e.clientX - boardBounding.x) / boardBounding.width;
+
+      if (rightOffset > 0.75) {
+        side = 'left';
+      } else {
+        side = 'right';
+      }
+      onLessonSelect(lessonData.id, side);
+    }
+  };
+
   return (
     <div
       title='lesson'
@@ -293,7 +298,7 @@ const Lesson = ({
         onMouseLeave={() => setIsResizeButtonsVisible(false)}
         onMouseDown={() => setIsResizeButtonsVisible(false)}
         onMouseUp={() => setIsResizeButtonsVisible(true)}
-        onClick={() => onLessonSelect(lessonData.id)}
+        onClick={lessonSelectHandler}
         aria-label='lesson'
         className={
           // (!lessonData.studentID ? '!border-amber-200 ' : '') +

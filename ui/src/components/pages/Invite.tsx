@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import ButtonPrimary from '../uiKit/buttons/ButtonPrimary';
 
 type Props = {};
@@ -30,9 +30,12 @@ const Invite = (props: Props) => {
         <span className='text-sm text-slate-400 w-80 text-center mt-1'>
           Нажимая кнопку 'Продолжить', вы принимаете
           <br />
-          <a className='text-slate-500 font-semibold cursor-pointer'>
+          <NavLink
+            to='/termOfUse'
+            className='text-slate-500 font-semibold cursor-pointer'
+          >
             пользовательское соглашение
-          </a>
+          </NavLink>
         </span>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
+import ButtonPrimary from '../../../../uiKit/buttons/ButtonPrimary';
 import {
   TbArrowsRightLeft,
   TbClock,
@@ -8,20 +8,26 @@ import {
   TbTrash,
   TbUserCircle,
 } from 'react-icons/tb';
-import { ILesson } from './Schedule';
+import { ILesson } from '../Schedule';
 import { Duration } from 'luxon';
-import classes from './Schedule.module.css';
-import Popup from '../../Popup';
-import StudentInfo from '../students/StudentInfo';
-import Students from '../students/Students';
+import classes from '../Schedule.module.css';
+import Popup from '../../../Popup';
+import StudentInfo from '../../students/StudentInfo';
+import Students from '../../students/Students';
 
 type Props = {
   selectedLesson: ILesson;
   onLessonChange(newLessonData: ILesson): void;
   onHide(): void;
+  side: 'right' | 'left';
 };
 
-const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
+const LessonDetails = ({
+  selectedLesson,
+  onLessonChange,
+  onHide,
+  side,
+}: Props) => {
   const [durationTimeString, setDurationTimeString] = useState('');
   const [extraModule, setExtraModule] = useState<
     null | 'studentInfo' | 'studentList'
@@ -67,8 +73,18 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
     }
   };
 
+  const studentSelectButtonClickHandler = () => {
+    if (extraModule !== 'studentList') {
+      setExtraModule('studentList');
+    } else {
+      setExtraModule(null);
+    }
+  };
+
   return (
-    <div className='absolute top-0 right-0 w-auto h-full z-50 transition-opacity flex flex-row-reverse'>
+    <div
+      className={`absolute top-0 ${side}-0 w-auto h-full z-50 transition-opacity flex flex-row-reverse`}
+    >
       <TbMinus
         onClick={onHide}
         size={26}
@@ -82,29 +98,46 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
         <h3 className='text-xl text-center mb-2 text-slate-800'>
           {selectedLesson.studentID ? 'Занятие с' : 'Занятие'}
         </h3>
+
         <div className='overflow-auto flex flex-col flex-grow'>
-          <div className='flex'>
-            <ButtonPrimary
-              className='w-full h-10 flex justify-between items-center mb-2 px-1 mr-1'
-              onClick={studentClickHandler}
-            >
-              <div className='flex items-center'>
-                <TbUserCircle
-                  size={26}
-                  className='mr-2 text-slate-500 shrink-0'
-                />
-                <span className='text-base text-slate-800 leading-none break-all'>
-                  {selectedLesson.studentName}
+          {!selectedLesson.studentID && (
+            <div className='flex'>
+              <ButtonPrimary
+                className={`w-full h-10 flex justify-between items-center mb-2 px-1 mr-1`}
+                onClick={studentSelectButtonClickHandler}
+              >
+                <span className='text-base text-slate-800 leading-none break-all w-full text-center'>
+                  Выбрать ученика
                 </span>
-              </div>
-            </ButtonPrimary>
-            <ButtonPrimary
-              className='h-10 w-10 shrink-0'
-              onClick={() => setExtraModule('studentList')}
-            >
-              <TbArrowsRightLeft size={22} className='text-slate-500' />
-            </ButtonPrimary>
-          </div>
+              </ButtonPrimary>
+            </div>
+          )}
+          {selectedLesson.studentID && (
+            <div className='flex'>
+              <ButtonPrimary
+                className={`w-full h-10 flex justify-between items-center mb-2 px-1 mr-1`}
+                onClick={studentClickHandler}
+              >
+                <div className='flex items-center'>
+                  <TbUserCircle
+                    size={26}
+                    className='mr-2 text-slate-500 shrink-0'
+                  />
+
+                  <span className='text-base text-slate-800 leading-none break-all w-full text-center'>
+                    {selectedLesson.studentName}
+                  </span>
+                </div>
+              </ButtonPrimary>
+
+              <ButtonPrimary
+                className='h-10 w-10 shrink-0'
+                onClick={studentSelectButtonClickHandler}
+              >
+                <TbArrowsRightLeft size={22} className='text-slate-500' />
+              </ButtonPrimary>
+            </div>
+          )}
 
           <div className='flex items-center justify-between border border-slate-200 rounded-md h-10 py-1 px-2 mb-2'>
             <span className='text-lg leading-none text-slate-800'>Начало</span>
@@ -202,7 +235,9 @@ const LessonDetails = ({ selectedLesson, onLessonChange, onHide }: Props) => {
           {extraModule === 'studentInfo' ? (
             <StudentInfo selectedStudentID={selectedLesson.studentID} />
           ) : (
-            <Students withDetails={false} />
+            <div className='pt-8 h-full'>
+              <Students withDetails={false} />
+            </div>
           )}
         </div>
       )}

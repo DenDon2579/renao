@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
-import { ILesson } from './Schedule';
-import Lesson from './Lesson';
+import React, { useMemo, useRef, useState } from 'react';
+import { ILesson } from '../Schedule';
+import Lesson from '../lesson/Lesson';
 import { Duration } from 'luxon';
+import getLessonTimeString from '../../../../../utils/schedule/getLessonTimeString';
 
 type Props = {
   gridSize: number;
@@ -12,7 +13,7 @@ type Props = {
   lessons: ILesson[];
   onLessonChange(newLesson: ILesson): void;
   boardRef: React.RefObject<HTMLDivElement>;
-  onLessonSelect(id: string): void;
+  onLessonSelect(id: string | null, side?: 'right' | 'left'): void;
   selectedLessonID: string | null;
   onLessonCreate(day: number, hour: number, minute: number): void;
 };
@@ -37,11 +38,14 @@ const LessonsGrid = ({
 }: Props) => {
   const [newLessonPos, setNewLessonPos] = useState<null | ILessonXY>(null);
   const [isLessonHovered, setIsLessonHovered] = useState(false);
-  const [newLessonTimeString, setNewLessonTimeString] = useState('');
+  const [newLessonTime, setNewLessonTime] = useState({
+    day: '',
+    time: '',
+  });
   const gridRef = useRef<HTMLDivElement>(null);
   const mouseMoveHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isLessonHovered) {
-      setNewLessonPos(null);
+    if (isLessonHovered || selectedLessonID) {
+      if (newLessonPos) setNewLessonPos(null);
       return;
     }
 
@@ -64,24 +68,10 @@ const LessonsGrid = ({
   };
 
   const setTimeLabel = (x: number, y: number) => {
-    console.log(x);
-    const lessonStartTimeString = Duration.fromObject({
-      hours: startHour,
-      minutes: x * 15,
-    })
-      .normalize()
-      .toFormat('h:mm');
-
-    const lessonEndTimeString = Duration.fromObject({
-      hours: startHour + 1,
-      minutes: x * 15,
-    })
-      .normalize()
-      .toFormat('h:mm');
-
-    setNewLessonTimeString(
-      `${daysNames[days[y]]} ${lessonStartTimeString}-${lessonEndTimeString}`
-    );
+    setNewLessonTime({
+      day: daysNames[days[y]],
+      time: getLessonTimeString(startHour, x * 15, 1 * 60),
+    });
   };
 
   const newLessonClickHandler = () => {
@@ -94,7 +84,51 @@ const LessonsGrid = ({
 
     if (newLessonPos)
       onLessonCreate(newLessonPos.y - 1, time.hours, time.minutes);
+
+    setNewLessonPos(null);
   };
+
+  const gridClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === gridRef.current && selectedLessonID) {
+      onLessonSelect(null);
+    }
+  };
+
+  const LessonList = useMemo(
+    () => (
+      <>
+        {lessons.map((lesson) => (
+          <Lesson
+            boardData={{
+              timeRangeFrom: startHour,
+              hours: hoursCount,
+              gridSize: gridSize,
+              days: days,
+              daysNames: daysNames,
+              ref: boardRef,
+            }}
+            key={lesson.id}
+            lessonData={lesson}
+            onLessonChange={onLessonChange}
+            onLessonSelect={onLessonSelect}
+            isSelected={lesson.id === selectedLessonID}
+            onLessonMouseEnter={() => setIsLessonHovered(true)}
+            onLessonMouseLeave={() => setIsLessonHovered(false)}
+          />
+        ))}
+      </>
+    ),
+    [
+      startHour,
+      hoursCount,
+      gridSize,
+      days,
+      daysNames,
+      boardRef,
+      selectedLessonID,
+      lessons,
+    ]
+  );
 
   return (
     <div
@@ -106,27 +140,9 @@ const LessonsGrid = ({
       onMouseLeave={mouseLeaveHandler}
       className='absolute grid w-full h-full z-50'
       ref={gridRef}
+      onClick={gridClickHandler}
     >
-      {lessons.map((lesson) => (
-        <Lesson
-          boardData={{
-            timeRangeFrom: startHour,
-            hours: hoursCount,
-            gridSize: gridSize,
-            days: days,
-            daysNames: daysNames,
-            ref: boardRef,
-          }}
-          key={lesson.id}
-          lessonData={lesson}
-          onLessonChange={onLessonChange}
-          onLessonSelect={onLessonSelect}
-          isSelected={lesson.id === selectedLessonID}
-          onLessonMouseEnter={() => setIsLessonHovered(true)}
-          onLessonMouseLeave={() => setIsLessonHovered(false)}
-        />
-      ))}
-
+      {LessonList}
       {newLessonPos && (
         <div
           style={{
@@ -134,19 +150,21 @@ const LessonsGrid = ({
             gridColumnEnd: newLessonPos.x + 4,
             gridRowStart: newLessonPos.y,
           }}
-          className='h-full p-0.5 relative flex justify-center opacity-65'
+          className='h-full p-0.5 relative flex justify-center items-start opacity-65'
           onClick={newLessonClickHandler}
         >
-          <div className='transition-opacity p-0.5 rounded-md w-auto h-6 absolute -bottom-7 z-40 text-sm text-nowrap bg-white text-slate-400 leading-none'>
-            {newLessonTimeString}
+          <div className='transition-opacity p-0.5 rounded-md w-auto h-6 absolute text-center bottom-2 z-30 text-sm text-nowrap text-slate-400 leading-none'>
+            {newLessonTime.day}
+            <br />
+            {newLessonTime.time}
           </div>
 
-          <div className='transition-all cursor-pointer relative w-full h-full overflow-clip bg-white border border-indigo-200 shadow-sm shadow-indigo-100 rounded-md flex justify-center items-center text-center'>
+          <div className='transition-all cursor-pointer relative w-full h-full overflow-clip bg-white border border-indigo-100 shadow-sm shadow-indigo-100 rounded-md flex justify-center items-start text-center'>
             <span
               style={{
                 wordBreak: 'break-word',
               }}
-              className='px-1 text-slate-600'
+              className='px-1 text-slate-600 mt-2'
             >
               Новый урок
             </span>

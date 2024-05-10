@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Students from './presets/students/Students';
 import { TbX } from 'react-icons/tb';
-import Schedule from './presets/schedule/Schedule';
 import StudentInfo from './presets/students/StudentInfo';
 import { Route, Routes } from 'react-router-dom';
 import Settings from './presets/settings/Settings';
+import Schedule from './presets/schedule/Schedule';
 
 type Props = {
   title: string;

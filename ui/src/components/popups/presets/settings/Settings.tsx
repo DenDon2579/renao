@@ -19,7 +19,8 @@ const Settings = (props: Props) => {
     audio: <Audio />,
     video: <Video />,
   };
-  const [selectedCategory, setSelectedCategory] = useState('account');
+  const [selectedCategory, setSelectedCategory] =
+    useState<keyof typeof categories>('account');
 
   return (
     <div className='w-auto h-64 flex relative'>

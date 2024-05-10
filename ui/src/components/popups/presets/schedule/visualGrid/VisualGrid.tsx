@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Lesson from './Lesson';
+import Lesson from '../lesson/Lesson';
 
 type Props = {
   gridSize: number;

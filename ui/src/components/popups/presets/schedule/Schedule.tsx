@@ -1,13 +1,12 @@
 import React, { createElement, useEffect, useRef, useState } from 'react';
 import classes from './Schedule.module.css';
 import Students from '../students/Students';
-import Lesson from './Lesson';
-import VisualGrid from './VisualGrid';
-import LessonsGrid from './LessonsGrid';
 import ButtonPrimary from '../../../uiKit/buttons/ButtonPrimary';
 import { TbPlus, TbSettings, TbUserCircle } from 'react-icons/tb';
 import StudentInfo from '../students/StudentInfo';
-import LessonDetails from './LessonDetails';
+import LessonDetails from './lessonDetails/LessonDetails';
+import LessonsGrid from './lessonsGrid/LessonsGrid';
+import VisualGrid from './visualGrid/VisualGrid';
 
 type Props = {};
 export interface ILesson {
@@ -294,6 +293,7 @@ const Schedule = (props: Props) => {
   );
 
   const [selectedLessonID, setSelectedLessonID] = useState<null | string>(null);
+  const [detailsSide, setDetailsSide] = useState<'right' | 'left'>('right');
 
   const onLessonChange = (newLessonData: ILesson) => {
     setLessons((prev) => {
@@ -307,7 +307,7 @@ const Schedule = (props: Props) => {
   };
 
   const scrollHandler = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (!ref.current || selectedLessonID) return;
 
     if (e.deltaY > 0) {
       ref.current.scrollLeft -= GRID_SIZE;
@@ -316,10 +316,11 @@ const Schedule = (props: Props) => {
     }
   };
 
-  const onLessonSelect = (id: string) => {
-    if (id === selectedLessonID) {
+  const onLessonSelect = (id: string | null, side?: 'right' | 'left') => {
+    if (!id || !side || id === selectedLessonID) {
       setSelectedLessonID(null);
     } else {
+      setDetailsSide(side);
       setSelectedLessonID(id);
     }
   };
@@ -411,6 +412,7 @@ const Schedule = (props: Props) => {
         </div>
         {selectedLessonID && (
           <LessonDetails
+            side={detailsSide}
             selectedLesson={
               lessons.find(
                 (lesson) => lesson.id === selectedLessonID
