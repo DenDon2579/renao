@@ -138,7 +138,7 @@ const LessonsGrid = ({
       }}
       onMouseMove={mouseMoveHandler}
       onMouseLeave={mouseLeaveHandler}
-      className='absolute grid w-full h-full z-50'
+      className='absolute grid w-fit h-full z-50'
       ref={gridRef}
       onClick={gridClickHandler}
     >

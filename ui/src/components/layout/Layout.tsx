@@ -4,6 +4,7 @@ import Content from './Content';
 import Popup from '../popups/Popup';
 import { Route, Routes } from 'react-router-dom';
 import Invite from '../pages/Invite';
+import Board from '../pages/Board';
 
 type Props = {};
 
@@ -22,6 +23,7 @@ const Layout = (props: Props) => {
           }
         />
         <Route path='/invitation/:inviteCode' element={<Invite />} />
+        <Route path='/board' element={<Board />} />
       </Routes>
     </div>
   );

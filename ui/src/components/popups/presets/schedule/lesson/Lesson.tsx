@@ -52,8 +52,6 @@ const Lesson = ({
     }
   }, [boardData.ref.current?.scrollLeft]);
 
-  useEffect(() => console.log('RERENDER:', lessonData.studentName));
-
   const [lessonTimeString, setLessonTimeString] = useState('');
   const q = useRef<HTMLDivElement>(null);
   const dragStartHandler = (e: React.DragEvent<HTMLDivElement>) => {
@@ -303,7 +301,7 @@ const Lesson = ({
         className={
           // (!lessonData.studentID ? '!border-amber-200 ' : '') +
           // (isSelected ? '!bg-indigo-50 !border-indigo-300 !border-2 ' : '') +
-          `active:-translate-y-0.5 transition-all cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 ${
+          `!bg-opacity-70 backdrop-blur-0 active:-translate-y-0.5 transition-all cursor-pointer relative w-full h-full overflow-clip active:bg-slate-50 ${
             lessonData.studentID
               ? 'hover:border-indigo-300'
               : 'hover:border-amber-300'
@@ -328,24 +326,19 @@ const Lesson = ({
       >
         {isResizeButtonsVisible && (
           <>
-            <div
-              onMouseDown={leftResizeHandler}
-              className={
-                'absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -left-1 cursor-w-resize hover:bg-indigo-200 ' +
-                (!lessonData.studentID
-                  ? '!bg-amber-100 !border-amber-300 hover:!bg-amber-200'
-                  : '')
-              }
-            ></div>
-            <div
-              onMouseDown={rightResizeHandler}
-              className={
-                'absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md -right-1 cursor-w-resize hover:bg-indigo-200 ' +
-                (!lessonData.studentID
-                  ? '!bg-amber-100 !border-amber-300 hover:!bg-amber-200'
-                  : '')
-              }
-            ></div>
+            {[...Array(2)].map((_, i) => (
+              <div
+                key={i}
+                onMouseDown={i ? leftResizeHandler : rightResizeHandler}
+                className={
+                  'absolute w-2 h-2/3 bg-indigo-100 border border-indigo-300 rounded-md cursor-w-resize hover:bg-indigo-200 ' +
+                  (!lessonData.studentID
+                    ? '!bg-amber-100 !border-amber-300 hover:!bg-amber-200 '
+                    : '') +
+                  (i ? '-left-1' : '-right-1')
+                }
+              ></div>
+            ))}
           </>
         )}
 

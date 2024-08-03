@@ -37,6 +37,7 @@ const LessonDetails = ({
   useEffect(() => {
     if (selectedLesson)
       setDurationTimeString(getDurationTimeString(0, selectedLesson.duration));
+    setExtraModule(null);
   }, [selectedLesson]);
 
   const durationChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,21 +81,26 @@ const LessonDetails = ({
       setExtraModule(null);
     }
   };
-
+  console.log(side[0]);
   return (
     <div
-      className={`absolute top-0 ${side}-0 w-auto h-full z-50 transition-opacity flex flex-row-reverse`}
+      className={`absolute top-0 ${side}-0 w-auto h-full z-50 transition-all flex ${
+        side === 'right' ? 'flex-row-reverse' : 'flex-row'
+      }`}
     >
-      <TbMinus
-        onClick={onHide}
-        size={26}
-        className='absolute top-2 right-2 text-slate-600 shrink-0 cursor-pointer'
-      />
-
       <div
         ref={ref}
-        className='w-60 h-full flex-shrink-0 bg-white bg-opacity-90 shadow-md shadow-indigo-100 rounded-md border border-indigo-100 p-2 flex flex-col'
+        className={`w-60 h-full flex-shrink-0 bg-white bg-opacity-80 backdrop-blur-sm ${
+          side === 'right'
+            ? 'rounded-tr-none rounded-br-md'
+            : 'rounded-tl-none rounded-bl-md'
+        }  border border-indigo-300 p-2 flex flex-col`}
       >
+        <TbMinus
+          onClick={onHide}
+          size={26}
+          className='absolute top-2 right-2 text-slate-600 shrink-0 cursor-pointer'
+        />
         <h3 className='text-xl text-center mb-2 text-slate-800'>
           {selectedLesson.studentID ? 'Занятие с' : 'Занятие'}
         </h3>
@@ -226,7 +232,11 @@ const LessonDetails = ({
         </div>
       </div>
       {extraModule && (
-        <div className='w-full h-full bg-white bg-opacity-90 shadow-md shadow-indigo-100 rounded-md border border-indigo-100 mr-2 relative'>
+        <div
+          className={`w-full h-full bg-white shadow-md shadow-indigo-100 rounded-md border border-indigo-100 bg-opacity-80 backdrop-blur-sm ${
+            side === 'right' ? 'mr-2' : 'ml-2'
+          } relative`}
+        >
           <TbMinus
             onClick={() => setExtraModule(null)}
             size={26}
@@ -235,7 +245,10 @@ const LessonDetails = ({
           {extraModule === 'studentInfo' ? (
             <StudentInfo selectedStudentID={selectedLesson.studentID} />
           ) : (
-            <div className='pt-8 h-full'>
+            <div className='h-full pt-9 flex flex-col items-center'>
+              <h3 className='absolute text-xl text-center text-slate-800 top-2'>
+                Выберите ученика
+              </h3>
               <Students withDetails={false} />
             </div>
           )}

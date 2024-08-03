@@ -346,7 +346,7 @@ const Schedule = (props: Props) => {
         <TbSettings size={22} className='text-slate-500' />
       </ButtonPrimary>
       <div
-        className='h-full flex relative xl:min-w-screen-md 2xl:min-w-screen-lg lg:min-w-96 md:min-w-52 min-w-0'
+        className='h-full flex xl:min-w-screen-md 2xl:min-w-screen-lg lg:min-w-96 md:min-w-52 min-w-0'
         onWheel={scrollHandler}
       >
         <div className='mt-9 *:flex *:items-center mr-2 *:text-slate-600'>

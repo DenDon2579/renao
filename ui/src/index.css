@@ -99,6 +99,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
   background: none;
 }
 
+input[type='range'][orient='vertical'] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: slider-vertical;
+  width: 16px;
+  vertical-align: bottom;
+}
+
 button,
 input {
   /* 1 */

@@ -33,7 +33,7 @@ const Students = ({ withDetails }: Props) => {
             <ButtonPrimary
               onClick={() => setSelectedStudentID(student.id)}
               key={student.id}
-              className='w-full h-10 flex justify-between items-center mb-2 px-1'
+              className='w-full h-10 flex justify-between items-center mb-2 px-1 last:mb-0 bg-opacity-30'
             >
               <div className='flex items-center'>
                 <TbUserCircle size={26} className='mr-2 text-slate-400' />
